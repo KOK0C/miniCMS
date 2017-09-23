@@ -1,0 +1,19 @@
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml';?>
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/navigation.phtml'; ?>
+
+<section>
+    <div class="jokes">
+        <?php foreach ($jokes as $joke): ?>
+            <p class="joke">
+                <?= htmlentities($joke); ?>
+            </p>
+        <?php endforeach; ?>
+    </div>
+    <div class="page-nav">
+        <?php indexed_links($page, $pages); ?>
+    </div>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'].'/includes/layouts/footer.phtml';?>
