@@ -67,7 +67,50 @@ header h1 {
     border: solid 2px white;
     text-align: justify;
 }
+.joke .category-page-link {
+    color: #1A446C;
+    text-decoration: none;
+}
+.joke .category-page-link:hover {
+    font-weight: bold;
+}
+.joke p {
+    margin: 5px 0;
+}
+.joke p:first-letter {
+    margin-left: 2rem;
+}
+.joke .date-pub {
+    font-size: 0.75rem;
+    color: darkgray;
+    font-style: italic;
+}
 .page-nav {
     text-align: center;
     margin: 5px auto;
+}
+.inactive {
+    color: #8D0D19;
+    font-weight: bold;
+}
+.navigation {
+    margin: 40px 0 0 -10px;
+    width: 140px;
+}
+.major-category {
+    display: block;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    border: none;
+}
+.navigation .category {
+    color: white;
+    text-decoration: none;
+}
+.navigation .category:hover {
+    color: #1A446C;
+    font-weight: bold;
+}
+.navigation .inactive {
+    font-weight: bold;
 }

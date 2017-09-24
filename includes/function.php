@@ -30,3 +30,19 @@ function indexed_links($page, $pages) {
     $nextPage = $page;
     print_link($page == $pages, 'Next >>', min($pages, ++$nextPage));
 }
+
+function categories_for_joke($joke_id) {
+//    Извлечение всех категорий для шутки
+    global  $pdo;
+
+    $categories = [];
+    $sql = "SELECT category_name, categories.category_id FROM categories 
+        INNER JOIN joke_category ON categories.category_id = joke_category.category_id 
+        WHERE joke_category.joke_id = " . $joke_id;
+    $result = $pdo->query($sql);
+    while ($row = $result->fetch()) {
+        $categories[] = '<a href="?category=' . $row['category_id'] . '" class="category-page-link">' . $row['category_name'] . '</a>';
+    }
+    $output = implode(', ', $categories);
+    return $output;
+}

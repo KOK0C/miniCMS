@@ -1,2 +1,13 @@
+
 <nav>
+    <div class="navigation">
+        <a href="?category=all"
+           class="category major-category<?php if ($category == 'all') {print ' inactive';} ?>">
+            Показать всё</a><br>
+        <?php while ($row = $resultCategory->fetch()): ?>
+            <a href="?category=<?= $row['category_id'] ?>"
+               class="category<?php if ($category == $row['category_id']) {print ' inactive';} ?>">
+                <?= $row['category_name']; ?></a><br>
+        <?php endwhile; ?>
+    </div>
 </nav>
