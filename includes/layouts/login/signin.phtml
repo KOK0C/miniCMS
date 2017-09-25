@@ -1,0 +1,18 @@
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+<section></section>
+
+<section>
+    <?php if (mb_strlen(trim($_SESSION['errors'])) > 0) {print session_errors();} ?>
+    <?php if (mb_strlen(trim($_SESSION['message'])) > 0) {print session_message();} ?>
+    <form method="post" class="login">
+        <span>Вход</span><br>
+        <label for="email">Введите эмейл: </label>
+        <input type="text" name="email"><br>
+        <label for="password">Введите пароль: </label>
+        <input type="password" name="password"><br>
+        <input type="submit" name="signin" value="Войти">
+    </form>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>

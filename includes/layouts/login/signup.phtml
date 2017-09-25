@@ -1,0 +1,25 @@
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+
+<section></section>
+
+<section>
+    <?php if (mb_strlen(trim($_SESSION['errors'])) > 0) {print session_errors();} ?>
+    <?php if (mb_strlen(trim($_SESSION['message'])) > 0) {print session_message();} ?>
+    <form method="post" class="login">
+        <span>Регистрация нового пользователя</span><br>
+        <label for="email">Введите эмейл: </label>
+        <input type="text" name="email"><br>
+        <label for="password">Введите пароль: </label>
+        <input type="password" name="password"><br>
+        <label for="retry_password">Повторите введенный пароль: </label>
+        <input type="password" name="retry_password"><br>
+        <label for="name">Введите имя: </label>
+        <input type="text" name="name"><br>
+        <label for="surname">Введите фамилию: </label>
+        <input type="text" name="surname"><br>
+        <input type="submit" name="signup" value="Зарегистрироваться">
+    </form>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>

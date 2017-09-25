@@ -6,10 +6,12 @@
  * Time: 18:07
  */
 
-function print_link($inactive, $text, $page) {
-    if ($inactive) {
+function print_link($inactive, $text, $page, $pages) {
+    if ($inactive && ($text === '<< Prev' || $text === 'Next >>')) {
+        print '';
+    } elseif ($inactive) {
         print "<span class='inactive'>$text</span>";
-    } else {
+    } elseif ($pages != 0) {
         print "<span class='active'>".
             "<a href='?page=$page'>$text</a></span>";
     }
@@ -19,16 +21,16 @@ function indexed_links($page, $pages) {
     $separator = ' | ';
 // Вывод ссылки "<<Prev"
     $prevPage = $page;
-    print_link($page == 1,'<< Prev', max(1, --$prevPage));
+    print_link($page == 1,'<< Prev', max(1, --$prevPage), $pages);
 // Вывод всех групп, кроме последней
     for ($i = 1; $i <= $pages; $i++) {
         print $separator;
-        print_link($i == $page, $i, $i);
+        print_link($i == $page, $i, $i, $pages);
     }
 // Вывод ссылки "Next>>"
     print $separator;
     $nextPage = $page;
-    print_link($page == $pages, 'Next >>', min($pages, ++$nextPage));
+    print_link($page == $pages, 'Next >>', min($pages, ++$nextPage), $pages);
 }
 
 function categories_for_joke($joke_id) {
@@ -45,4 +47,18 @@ function categories_for_joke($joke_id) {
     }
     $output = implode(', ', $categories);
     return $output;
+}
+
+function redirect_to($new_location) {
+//    Переадресация
+    header('Location: ' . $new_location);
+    exit();
+}
+
+function mb_ucfirst($string, $encoding = 'UTF-8')
+    #Поскольку в PHP нету мультибайтового аналога ucfirst(), написал свой.
+    #Переводит первый символ строки в верхний регистр
+{
+    return mb_strtoupper(mb_substr($string, 0, 1, $encoding)) .
+        mb_substr($string, 1, mb_strlen($string, $encoding),$encoding);
 }

@@ -6,6 +6,8 @@
  * Time: 13:56
  */
 
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/session_function.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/connection_db.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';
 
@@ -14,7 +16,7 @@ try {
     $totalCategory = $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn(0);
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества категорий в бд' . $e->getMessage();
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/public/error.phtml';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
 
@@ -36,11 +38,9 @@ try {
     $resultCategory = $pdo->query($sql);
 } catch (PDOException $e) {
     $error = 'Ошибка при извлечении категорий: ' . $e->getMessage();
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/public/error.phtml';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
-
-$per_page = 10; // количество выводимых записей на страницу
 
 try {
     // Подсчет количества шуток в базе данных
@@ -53,11 +53,11 @@ try {
     }
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества шуток в бд' . $e->getMessage();
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/public/error.phtml';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
 
-$pages = ceil($totalJokes / $per_page); //Количество необходимых страниц
+$pages = ceil($totalJokes / PER_PAGE); //Количество необходимых страниц
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['page'])) {
 //    Страница по умолчанию
     if (! is_numeric($_GET['page']) or $_GET['page'] <= 0 or $_GET['page'] > $pages) {
@@ -73,19 +73,19 @@ $offset = ($page - 1) * 10;
 
 try {
     //Извлечение шуток
-    $sql = "SELECT * FROM jokes ";
-    $sql .= "INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id ";
-    $sql .= "INNER JOIN categories ON joke_category.category_id = categories.category_id ";
+    $sql = "SELECT * FROM jokes 
+            INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id 
+            INNER JOIN categories ON joke_category.category_id = categories.category_id ";
     if ($category != 'all') {
         $sql .= "WHERE joke_category.category_id = $category ";
     }
-    $sql .= "ORDER BY jokes.joke_id DESC ";
-    $sql .= "LIMIT $per_page OFFSET $offset";
+    $sql .= "ORDER BY jokes.joke_id DESC 
+             LIMIT " . PER_PAGE . " OFFSET $offset";
     $resultJoke = $pdo->query($sql);
 } catch (PDOException $e) {
     $error = 'Ошибка при извлечении шуток: ' . $e->getMessage();
-    include_once $_SERVER['DOCUMENT_ROOT'] . '/public/error.phtml';
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/public/jokes.phtml';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/jokes.phtml';
