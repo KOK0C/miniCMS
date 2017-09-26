@@ -12,7 +12,10 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/connection_db.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';
 
 try {
-    $totalAuthor = $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn(0);
+//    Подсчет авторов
+    $totalAuthor = $pdo->query('SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1');
+    $row = $totalAuthor->fetch();
+    $totalAuthor = $row['user_id'];
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества пользователей в бд' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
@@ -21,7 +24,9 @@ try {
 
 try {
     // Подсчет количества категорий в базе данных
-    $totalCategory = $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn(0);
+    $totalCategory = $pdo->query('SELECT category_id FROM categories ORDER BY category_id DESC LIMIT 1');
+    $row = $totalCategory->fetch();
+    $totalCategory = $row['category_id'];
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества категорий в бд' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
@@ -29,8 +34,8 @@ try {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['author'])) {
-//    Категория по умолчанию
-    if (! is_numeric($_GET['author']) or $_GET['author'] <= 0 or $_GET['category'] > $totalAuthor) {
+//    Указание автора, если не получаеться выбираем все категории
+    if (! is_numeric($_GET['author']) or $_GET['author'] <= 0 or $_GET['author'] > $totalAuthor) {
         $category = 'all';
     } else {
         $author = $_GET['author'];
@@ -102,8 +107,7 @@ try {
             INNER JOIN users ON jokes.author_id = users.user_id ";
     if (isset($author) && is_numeric($author)) {
         $sql .= "WHERE jokes.author_id = $author ";
-    }
-    if ($category != 'all') {
+    } elseif ($category != 'all') {
         $sql .= "WHERE joke_category.category_id = $category ";
     }
     $sql .= "ORDER BY jokes.joke_id DESC 
