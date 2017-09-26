@@ -23,3 +23,14 @@ function session_message() {
     $_SESSION['message'] = '';
     return $output;
 }
+
+function hello_block_authorization() {
+    $output = '<div class="hello-block">
+               <p>
+               Привет, ' . $_SESSION['name'] . ' ' . $_SESSION['surname'] . '<br>
+               Мы рады Вас видеть, и надеемся<br>
+               Вы не желаете <a href="' . DOMEN . 'public/login/?logout">выходить</a>
+               </p>
+               </div>';
+    return $output;
+}

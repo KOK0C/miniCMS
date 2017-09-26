@@ -12,12 +12,32 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/connection_db.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';
 
 try {
+    $totalAuthor = $pdo->query('SELECT COUNT(*) FROM users')->fetchColumn(0);
+} catch (PDOException $e) {
+    $error = 'Ошибка при подсчете количества пользователей в бд' . $e->getMessage();
+    include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
+    exit();
+}
+
+try {
     // Подсчет количества категорий в базе данных
     $totalCategory = $pdo->query('SELECT COUNT(*) FROM categories')->fetchColumn(0);
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества категорий в бд' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['author'])) {
+//    Категория по умолчанию
+    if (! is_numeric($_GET['author']) or $_GET['author'] <= 0 or $_GET['category'] > $totalAuthor) {
+        $category = 'all';
+    } else {
+        $author = $_GET['author'];
+        $author = ceil($author);
+    }
+} else {
+    $category = 'all';
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['category'])) {
@@ -44,12 +64,15 @@ try {
 
 try {
     // Подсчет количества шуток в базе данных
-    if ($category == 'all') {
+    if (isset($author) && is_numeric($author)) {
+        $totalJokes = $pdo->query("SELECT COUNT(*) FROM jokes
+                                             WHERE author_id = $author")->fetchColumn(0);
+    } elseif ($category == 'all') {
         $totalJokes = $pdo->query('SELECT COUNT(*) FROM jokes')->fetchColumn(0);
     } else {
         $totalJokes = $pdo->query("SELECT COUNT(*) FROM jokes 
-                                            INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id 
-                                            WHERE joke_category.category_id = $category")->fetchColumn(0);
+                                             INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id 
+                                             WHERE joke_category.category_id = $category")->fetchColumn(0);
     }
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества шуток в бд' . $e->getMessage();
@@ -75,7 +98,11 @@ try {
     //Извлечение шуток
     $sql = "SELECT * FROM jokes 
             INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id 
-            INNER JOIN categories ON joke_category.category_id = categories.category_id ";
+            INNER JOIN categories ON joke_category.category_id = categories.category_id 
+            INNER JOIN users ON jokes.author_id = users.user_id ";
+    if (isset($author) && is_numeric($author)) {
+        $sql .= "WHERE jokes.author_id = $author ";
+    }
     if ($category != 'all') {
         $sql .= "WHERE joke_category.category_id = $category ";
     }

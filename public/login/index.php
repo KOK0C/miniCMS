@@ -12,7 +12,19 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/validation_function.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
+if (isset($_SESSION['id']) && strlen($_SESSION['id']) > 0
+          && $_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['logout'])){
+//    Выход пользователя
+    $_SESSION['id'] = '';
+    $_SESSION['email'] = '';
+    $_SESSION['name'] = '';
+    $_SESSION['surname'] = '';
+    $_SESSION['type'] = '';
+    redirect_to(DOMEN . 'public/');
+} elseif (($_SESSION['id']) && strlen($_SESSION['id']) > 0) {
+//    Если пользователь уже вошел, ему тут делать нечего, возвращаем его на главную
+    redirect_to(DOMEN . 'public/');
+} elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
 //    Регистрация нового пользователя
     if ($errorSignUp = validate_signup()) {
 //        Проверка формы на ошибки, если есть ошибки отправляем заполнять заного
@@ -25,17 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {
         $surname = mb_ucfirst(mb_strtolower($_POST['surname']));
         try {
             $sql = 'INSERT INTO users (user_email, hash_password, `name`, surname)
-                VALUES (:email, :password, :first_name, :surname)';
+                    VALUES (:email, :password, :first_name, :surname)';
             $addUser = $pdo->prepare($sql);
             $addUser->execute(['email' => $_POST['email'], 'password' => $hashed_password,
                 'first_name' => $name, 'surname' => $surname]);
-            $_SESSION['message'] = 'Поздравляем с регистрацией ' . mb_ucfirst(mb_strtolower($_POST['name'])) . ', теперь можете войти';
+            $_SESSION['message'] = 'Поздравляем с регистрацией ' .
+                                    mb_ucfirst(mb_strtolower($_POST['name'])) . ', теперь можете войти';
             redirect_to(DOMEN . 'public/login/?signin');
         } catch (PDOException $e) {
             $error = 'Неудалось добавить нового пользователя в базу данных: ' . $e->getMessage();
             include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
             exit();
         }
+    }
+} elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signin'])) {
+//    Вход пользователя
+    if ($errorSignIn = validate_signin()) {
+        $_SESSION['errors'] = $errorSignIn;
+        redirect_to(DOMEN . 'public/login/?signin');
+    } else {
+        redirect_to(DOMEN . 'public/');
     }
 } elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && (isset($_GET['signin']) || isset($_GET['signup']))) {
 //    Направление пользователя на регистрацию либо на вход

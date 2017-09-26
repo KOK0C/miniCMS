@@ -7,6 +7,7 @@
  */
 
 function validate_signup() {
+//    Валидация регистрации
     global $pdo;
 
     $errors = [];
@@ -41,8 +42,44 @@ function validate_signup() {
         $error = '<span>При заполнении формы обнаружены ошибки:</span><br><ul><li>';
         $error .= implode('</li><li>', $errors);
         $error .= '</li></ul>';
+        return $error;
     } else {
-        $error = '';
+        return false;
     }
-    return $error;
+}
+
+function validate_signin() {
+//        Валидация входа
+    global $pdo;
+
+    $errors = [];
+    if (mb_strlen(trim($_POST['email'])) == 0 or mb_strlen(trim($_POST['password'])) == 0) {
+        $errors[] = 'Все поля должны быть заполнены';
+    }
+    $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+    if ($email === false) {
+        $errors[] = 'Укажите корректный эмейл';
+    }
+    $sql = 'SELECT * FROM users INNER JOIN users_type ON users.user_type = users_type.user_type_id
+            WHERE user_email = :email';
+    $findUser = $pdo->prepare($sql);
+    $findUser->execute(['email' => $_POST['email']]);
+    $row = $findUser->fetch();
+    if ((! $row) or ! (password_verify($_POST['password'], $row['hash_password']))) {
+        $errors[] = 'Неверный эмейл или пароль';
+    }
+    if ($errors) {
+        $error = '<span>При заполнении формы обнаружены ошибки:</span><br><ul><li>';
+        $error .= implode('</li><li>', $errors);
+        $error .= '</li></ul>';
+        return $error;
+    } else {
+//        Валидация пройдена - вход выполнен
+        $_SESSION['id'] = $row['user_id'];
+        $_SESSION['email'] = $row['user_email'];
+        $_SESSION['name'] = $row['name'];
+        $_SESSION['surname'] = $row['surname'];
+        $_SESSION['type'] = $row['user_type_name'];
+        return false;
+    }
 }

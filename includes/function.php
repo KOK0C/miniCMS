@@ -39,8 +39,8 @@ function categories_for_joke($joke_id) {
 
     $categories = [];
     $sql = "SELECT category_name, categories.category_id FROM categories 
-        INNER JOIN joke_category ON categories.category_id = joke_category.category_id 
-        WHERE joke_category.joke_id = " . $joke_id;
+            INNER JOIN joke_category ON categories.category_id = joke_category.category_id 
+            WHERE joke_category.joke_id = " . $joke_id;
     $result = $pdo->query($sql);
     while ($row = $result->fetch()) {
         $categories[] = '<a href="?category=' . $row['category_id'] . '" class="category-page-link">' . $row['category_name'] . '</a>';
@@ -61,4 +61,16 @@ function mb_ucfirst($string, $encoding = 'UTF-8')
 {
     return mb_strtoupper(mb_substr($string, 0, 1, $encoding)) .
         mb_substr($string, 1, mb_strlen($string, $encoding),$encoding);
+}
+
+function hello_block() {
+//    Блок приветствия если пользователь не авторизован.
+    $output = '<div class="hello-block">
+               <p>
+               Привет, Гость! <br>
+               Желаешь <a href="' . DOMEN . 'public/login/?signin">войти</a><br>
+               или <a href="' . DOMEN . 'public/login/?signup">зарегистрироваться</a>?
+               </p>
+               </div>';
+    return $output;
 }
