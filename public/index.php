@@ -13,9 +13,8 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';
 
 try {
 //    Подсчет авторов
-    $totalAuthor = $pdo->query('SELECT user_id FROM users ORDER BY user_id DESC LIMIT 1');
-    $row = $totalAuthor->fetch();
-    $totalAuthor = $row['user_id'];
+    $totalAuthor = $pdo->query('SELECT user_id FROM users');
+    $totalAuthor = $totalAuthor->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества пользователей в бд' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
@@ -24,9 +23,8 @@ try {
 
 try {
     // Подсчет количества категорий в базе данных
-    $totalCategory = $pdo->query('SELECT category_id FROM categories ORDER BY category_id DESC LIMIT 1');
-    $row = $totalCategory->fetch();
-    $totalCategory = $row['category_id'];
+    $totalCategory = $pdo->query('SELECT category_id FROM categories');
+    $totalCategory = $totalCategory->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $e) {
     $error = 'Ошибка при подсчете количества категорий в бд' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
@@ -35,23 +33,19 @@ try {
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['author'])) {
 //    Указание автора, если не получаеться выбираем все категории
-    if (! is_numeric($_GET['author']) or $_GET['author'] <= 0 or $_GET['author'] > $totalAuthor) {
-        $category = 'all';
-    } else {
+    if (in_array($_GET['author'], $totalAuthor)) {
         $author = $_GET['author'];
-        $author = ceil($author);
+    } else {
+        $category = 'all';
     }
-} else {
-    $category = 'all';
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['category'])) {
 //    Категория по умолчанию
-    if (! is_numeric($_GET['category']) or $_GET['category'] <= 0 or $_GET['category'] > $totalCategory) {
-        $category = 'all';
-    } else {
+    if (in_array($_GET['category'], $totalCategory)) {
         $category = $_GET['category'];
-        $category = ceil($category);
+    } else {
+        $category = 'all';
     }
 } else {
     $category = 'all';
@@ -69,10 +63,10 @@ try {
 
 try {
     // Подсчет количества шуток в базе данных
-    if (isset($author) && is_numeric($author)) {
+    if (isset($author)) {
         $totalJokes = $pdo->query("SELECT COUNT(*) FROM jokes
                                              WHERE author_id = $author")->fetchColumn(0);
-    } elseif ($category == 'all') {
+    } elseif ($category === 'all') {
         $totalJokes = $pdo->query('SELECT COUNT(*) FROM jokes')->fetchColumn(0);
     } else {
         $totalJokes = $pdo->query("SELECT COUNT(*) FROM jokes 
@@ -86,13 +80,15 @@ try {
 }
 
 $pages = ceil($totalJokes / PER_PAGE); //Количество необходимых страниц
+
 if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['page'])) {
 //    Страница по умолчанию
-    if (! is_numeric($_GET['page']) or $_GET['page'] <= 0 or $_GET['page'] > $pages) {
-        $page = 1;
-    } else {
+    if (filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT,
+        ['option' => ['min_range' => 0,
+                      'max_range' => $pages]])) {
         $page = $_GET['page'];
-        $page = ceil($page);
+    } else {
+        $page = 1;
     }
 } else {
     $page = 1;
@@ -102,13 +98,13 @@ $offset = ($page - 1) * 10;
 try {
     //Извлечение шуток
     $sql = "SELECT * FROM jokes 
-            INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id 
-            INNER JOIN categories ON joke_category.category_id = categories.category_id 
             INNER JOIN users ON jokes.author_id = users.user_id ";
-    if (isset($author) && is_numeric($author)) {
+    if (isset($author)) {
         $sql .= "WHERE jokes.author_id = $author ";
     } elseif ($category != 'all') {
-        $sql .= "WHERE joke_category.category_id = $category ";
+        $sql .= "INNER JOIN joke_category ON jokes.joke_id = joke_category.joke_id
+                 INNER JOIN categories ON joke_category.category_id = categories.category_id
+                 WHERE joke_category.category_id = $category ";
     }
     $sql .= "ORDER BY jokes.joke_id DESC 
              LIMIT " . PER_PAGE . " OFFSET $offset";

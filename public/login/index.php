@@ -12,8 +12,7 @@ include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/config.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/function.php';
 include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/validation_function.php';
 
-if (isset($_SESSION['id']) && strlen($_SESSION['id']) > 0
-          && $_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['logout'])){
+if (! empty($_SESSION['id']) && $_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['logout'])){
 //    Выход пользователя
     $_SESSION['id'] = '';
     $_SESSION['email'] = '';
@@ -21,7 +20,7 @@ if (isset($_SESSION['id']) && strlen($_SESSION['id']) > 0
     $_SESSION['surname'] = '';
     $_SESSION['type'] = '';
     redirect_to(DOMEN . 'public/');
-} elseif (($_SESSION['id']) && strlen($_SESSION['id']) > 0) {
+} elseif (! empty($_SESSION['id'])) {
 //    Если пользователь уже вошел, ему тут делать нечего, возвращаем его на главную
     redirect_to(DOMEN . 'public/');
 } elseif ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['signup'])) {

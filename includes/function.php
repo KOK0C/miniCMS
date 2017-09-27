@@ -65,12 +65,12 @@ function mb_ucfirst($string, $encoding = 'UTF-8')
 
 function hello_block() {
 //    Блок приветствия если пользователь не авторизован.
-    $output = '<div class="hello-block">
-               <p>
-               Привет, Гость! <br>
-               Желаешь <a href="' . DOMEN . 'public/login/?signin">войти</a><br>
-               или <a href="' . DOMEN . 'public/login/?signup">зарегистрироваться</a>?
-               </p>
-               </div>';
+    $output = '<div class="hello-block">';
+    $output .= '<p>';
+    $output .= 'Привет, Гость! <br>';
+    $output .= 'Желаешь <a href="' . DOMEN . 'public/login/?signin">войти</a><br>';
+    $output .= 'или <a href="' . DOMEN . 'public/login/?signup">зарегистрироваться</a>?';
+    $output .= '</p>';
+    $output .= '</div>';
     return $output;
 }

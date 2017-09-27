@@ -3,9 +3,9 @@
 
 <section></section>
 <section>
-    <?php if (mb_strlen($_SESSION['errors']) > 0) {print session_errors();} ?>
-    <?php if (mb_strlen($_SESSION['message']) > 0) {print session_message();} ?>
-    <form method="post" class="login">
+    <?php if (! empty($_SESSION['errors'])) {print session_errors();} ?>
+    <?php if (! empty($_SESSION['message'])) {print session_message();} ?>
+    <form method="post" class="form">
         <span>Регистрация нового пользователя</span><br>
         <label for="email">Введите эмейл: </label>
         <input type="text" name="email"><br>

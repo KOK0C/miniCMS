@@ -3,12 +3,17 @@
 <?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/navigation.phtml'; ?>
 
 <section>
-    <?php if (isset($_SESSION['id']) and strlen($_SESSION['id']) > 0) {print hello_block_authorization();}
+    <?php if (! empty($_SESSION['id'])) {print hello_block_authorization();}
           else {print hello_block();} ?>
+    <?php if (! empty($_SESSION['message'])) {print session_message();} ?>
+    <?php if (! empty($_SESSION['type'])) {print addJokeLink();} ?>
+
     <div class="jokes">
         <?php while ($row = $resultJoke->fetch()): ?>
             <div class="joke">
-                <a href="?author=<?= $row['user_id']; ?>" class="author-link-jokes"><?= $row['name'] . ' ' . $row['surname']; ?></a><br>
+                <a href="?author=<?= $row['user_id']; ?>" class="author-link-jokes"><?= htmlentities($row['name'])
+                                                                                        . ' ' . htmlentities($row['surname']); ?>
+                </a><br>
                 <span>Категории: <?= categories_for_joke($row['joke_id']) ?></span>
                 <p>
                     <?= htmlentities($row['joke_text']); ?><br>

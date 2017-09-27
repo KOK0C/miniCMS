@@ -39,7 +39,7 @@ function validate_signup() {
         $errors[] = 'Пароли должны совпадать!';
     }
     if ($errors) {
-        $error = '<span>При заполнении формы обнаружены ошибки:</span><br><ul><li>';
+        $error = '<span>При регистрации обнаружены ошибки:</span><br><ul><li>';
         $error .= implode('</li><li>', $errors);
         $error .= '</li></ul>';
         return $error;
@@ -69,7 +69,7 @@ function validate_signin() {
         $errors[] = 'Неверный эмейл или пароль';
     }
     if ($errors) {
-        $error = '<span>При заполнении формы обнаружены ошибки:</span><br><ul><li>';
+        $error = '<span>Во время входа обнаружены ошибки:</span><br><ul><li>';
         $error .= implode('</li><li>', $errors);
         $error .= '</li></ul>';
         return $error;
@@ -80,6 +80,24 @@ function validate_signin() {
         $_SESSION['name'] = $row['name'];
         $_SESSION['surname'] = $row['surname'];
         $_SESSION['type'] = $row['user_type_name'];
+        return false;
+    }
+}
+
+function validate_addJoke(){
+    $errors = [];
+    if (mb_strlen(trim($_POST['joke_text'])) == 0) {
+        $errors[] = 'Напишите шутку';
+    }
+    if (empty($_POST['categories'])) {
+        $errors[] = 'Выберите категорию для шутки';
+    }
+    if ($errors) {
+        $error = '<span>При добавлении шутки обнаружены ошибки:</span><br><ul><li>';
+        $error .= implode('</li><li>', $errors);
+        $error .= '</li></ul>';
+        return $error;
+    } else {
         return false;
     }
 }

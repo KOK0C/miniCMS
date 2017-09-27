@@ -25,12 +25,19 @@ function session_message() {
 }
 
 function hello_block_authorization() {
-    $output = '<div class="hello-block">
-               <p>
-               Привет, ' . $_SESSION['name'] . ' ' . $_SESSION['surname'] . '<br>
-               Мы рады Вас видеть, и надеемся<br>
-               Вы не желаете <a href="' . DOMEN . 'public/login/?logout">выходить</a>
-               </p>
-               </div>';
+    $output = '<div class="hello-block">';
+    $output .= '<p>';
+    $output .= 'Привет, ' . $_SESSION['name'] . ' ' . $_SESSION['surname'] . '<br>';
+    $output .= 'Мы рады Вас видеть, и надеемся<br>';
+    $output .= 'Вы не желаете <a href="' . DOMEN . 'public/login/?logout">выходить</a>';
+    $output .= '</p>';
+    $output .= '</div>';
+    return $output;
+}
+
+function addJokeLink() {
+    $output = '<div class="addjoke">';
+    $output .= '<a href="' . DOMEN . 'public/admin/jokes/?addjoke">+ Добавить шутку</a>';
+    $output .= '</div>';
     return $output;
 }
