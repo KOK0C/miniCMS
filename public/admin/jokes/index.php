@@ -59,7 +59,7 @@ if (empty($_SESSION['id'])) {
     } else {
 //        Если нет ошибок редактируем шутку в бд
         try {
-//            Сначала удаляем старые категории шутку
+//            Сначала удаляем старые категории шутки
             $sql = 'DELETE FROM joke_category WHERE joke_id = ' . $_SESSION['updatejoke'];
             $stmt = $pdo->exec($sql);
         } catch (PDOException $e) {
@@ -69,9 +69,10 @@ if (empty($_SESSION['id'])) {
         }
         try {
 //            Обновляем текст шутки
-            $sql = 'UPDATE jokes SET joke_text = :joke_text, joke_date = CURRENT_TIMESTAMP WHERE joke_id = :joke_id';
+            $sql = 'UPDATE jokes SET joke_text = :joke_text, joke_date = CURRENT_TIMESTAMP, is_edit = 1 
+                    WHERE joke_id = :joke_id';
             $stmt = $pdo->prepare($sql);
-            $stmt->execute(['joke_text' => $_POST['joke_text'], 'joke_id' => $_SESSION['updatejoke']]);
+            $stmt->execute(['joke_text' => trim($_POST['joke_text']), 'joke_id' => $_SESSION['updatejoke']]);
         } catch (PDOException $e) {
             $error = 'Неудалось обновить текст для шутки: ' . $e->getMessage();
             include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
@@ -93,7 +94,7 @@ if (empty($_SESSION['id'])) {
         $_SESSION['message'] = 'Шутка успешно обновлена!';
         redirect_to(DOMEN . 'public/');
     }
-} elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && (isset($_GET['addjoke']) || isset($_GET['updatejoke']))) {
+} elseif ($_SERVER['REQUEST_METHOD'] == 'GET' && (isset($_GET['addjoke']) || isset($_GET['updatejoke']) || isset($_GET['deletejoke']))) {
     try {
 //        Выбор категорий для заполнения формы
         $sql = 'SELECT * FROM categories ORDER BY category_name';
@@ -106,7 +107,7 @@ if (empty($_SESSION['id'])) {
     if (isset($_GET['addjoke'])) {
 //        Форма добавления шутки
         include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/admin/jokes/addjokes.phtml';
-    } elseif (isset($_GET['updatejoke'])) {
+    } elseif (isset($_GET['updatejoke']) || isset($_GET['deletejoke'])) {
         try {
             // Выбор id существующих шуток для проверки
             $sql = 'SELECT joke_id FROM jokes';
@@ -119,6 +120,34 @@ if (empty($_SESSION['id'])) {
             $error = 'Ошибка при подсчете количества шуток автора в бд: ' . $e->getMessage();
             include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
             exit();
+        }
+        if (in_array($_GET['deletejoke'], $totalJoke)) {
+//            Проверка пройдена можно удалять шутку
+            try {
+//                Сначала удаляем категории шутки
+                $sql = 'DELETE FROM joke_category WHERE joke_id = ' . $_GET['deletejoke'];
+                $stmt = $pdo->exec($sql);
+            } catch (PDOException $e) {
+                $error = 'Ошибка при удалении категорий для шутки: ' . $e->getMessage();
+                include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
+                exit();
+            }
+            try {
+//                Затем удаляем саму шутку
+                $sql = 'DELETE FROM jokes WHERE joke_id = ' . $_GET['deletejoke'];
+                $stmt = $pdo->exec($sql);
+            } catch (PDOException $e) {
+                $error = 'Ошибка при удалении шутки из бд: ' . $e->getMessage();
+                include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
+                exit();
+            }
+//            После удаления - на главную
+            $_SESSION['message'] = 'Шутка успешно удалена';
+            redirect_to(DOMEN . 'public/');
+        } else {
+//            ID шутки неопознан
+            $_SESSION['errors'] = 'Вы пытаетесь удалить недоступную шутку';
+            redirect_to(DOMEN . 'public/');
         }
         if (in_array($_GET['updatejoke'], $totalJoke)) {
 //            После проверки достаем текс и категории выбраной шутки для редактирования

@@ -19,15 +19,17 @@
                 <p>
                     <?= htmlentities($row['joke_text']); ?><br>
                 </p>
-                <span class="date-pub">Время публикации: <?= htmlentities($row['joke_date']); ?></span><br>
+                <?php if ($row['is_edit'] == 0) {$publication = 'публикации';} else {$publication = 'редактирования';} ?>
+                <span class="date-pub">Время <?= $publication; ?>: <?= htmlentities($row['joke_date']); ?></span><br>
                 <?php if ($_SESSION['id'] === $row['user_id'] || $_SESSION['type'] === 'admin') {
                     print '<a href="' . DOMEN . 'public/admin/jokes/?updatejoke=' . $row['joke_id'] . '" class="button">Редактировать</a>';
+                    print '<a href="' . DOMEN . 'public/admin/jokes/?deletejoke=' . $row['joke_id'] . '" class="button">Удалить</a>';
                 } ?>
             </div>
         <?php endwhile; ?>
     </div>
     <div class="page-nav">
-        <?php indexed_links($page, $pages); ?>
+        <?php if ($pages != 0) {indexed_links($page, $pages);} ?>
     </div>
 </section>
 
