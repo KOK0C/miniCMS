@@ -16,7 +16,7 @@ try {
     $totalAuthor = $pdo->query('SELECT user_id FROM users');
     $totalAuthor = $totalAuthor->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $e) {
-    $error = 'Ошибка при подсчете количества пользователей в бд' . $e->getMessage();
+    $error = 'Ошибка при подсчете количества пользователей в бд: ' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
@@ -26,7 +26,7 @@ try {
     $totalCategory = $pdo->query('SELECT category_id FROM categories');
     $totalCategory = $totalCategory->fetchAll(PDO::FETCH_COLUMN);
 } catch (PDOException $e) {
-    $error = 'Ошибка при подсчете количества категорий в бд' . $e->getMessage();
+    $error = 'Ошибка при подсчете количества категорий в бд: ' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
@@ -74,7 +74,7 @@ try {
                                              WHERE joke_category.category_id = $category")->fetchColumn(0);
     }
 } catch (PDOException $e) {
-    $error = 'Ошибка при подсчете количества шуток в бд' . $e->getMessage();
+    $error = 'Ошибка при подсчете количества шуток в бд: ' . $e->getMessage();
     include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
     exit();
 }
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET' && isset($_GET['page'])) {
 } else {
     $page = 1;
 }
-$offset = ($page - 1) * 10;
+$offset = ($page - 1) * PER_PAGE;
 
 try {
     //Извлечение шуток
@@ -106,7 +106,7 @@ try {
                  INNER JOIN categories ON joke_category.category_id = categories.category_id
                  WHERE joke_category.category_id = $category ";
     }
-    $sql .= "ORDER BY jokes.joke_id DESC 
+    $sql .= "ORDER BY jokes.joke_date DESC 
              LIMIT " . PER_PAGE . " OFFSET $offset";
     $resultJoke = $pdo->query($sql);
 } catch (PDOException $e) {

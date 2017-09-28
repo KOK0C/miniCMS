@@ -84,7 +84,7 @@ function validate_signin() {
     }
 }
 
-function validate_addJoke(){
+function validate_Joke(){
     $errors = [];
     if (mb_strlen(trim($_POST['joke_text'])) == 0) {
         $errors[] = 'Напишите шутку';

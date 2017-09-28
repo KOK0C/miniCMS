@@ -1,0 +1,26 @@
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+<section></section>
+
+<section>
+    <?= hello_block_authorization(); ?>
+    <?php if (! empty($_SESSION['errors'])) {print session_errors();} ?>
+    <form method="post" class="form">
+        <span>Добавить шутку</span><br>
+        <label for="joke_text">Текст шутки: </label>
+        <textarea name="joke_text" cols="50" rows="4">
+            <?= htmlentities($selectJokeText); ?>
+        </textarea><br>
+        <fieldset>
+            <legend>Выберите категории для шутки: </legend><br>
+            <?php while ($row = $allCategories->fetch()): ?>
+                <label for="<?= $row['category_id']; ?>"><?= $row['category_name']; ?></label>
+                <input type="checkbox" value="<?= $row['category_id']; ?>" name="categories[]"
+                <?php if (in_array($row['category_id'], $selectCategory)) {print ' checked';} ?>>
+            <?php endwhile; ?>
+        </fieldset>
+        <input type="submit" name="updatejoke" value="Редактировать">
+    </form>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>

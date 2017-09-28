@@ -74,3 +74,10 @@ function hello_block() {
     $output .= '</div>';
     return $output;
 }
+
+function print_array($array) {
+//    Печатает массив
+    print '<pre>';
+    print print_r($array);
+    print '</pre>';
+}
