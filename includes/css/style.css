@@ -211,3 +211,14 @@ header h1 {
 .joke .button {
     margin: 5px 50px 0 50px;
 }
+.navigation .new-category {
+    display: inline-block;
+    margin: 20px auto;
+}
+.navigation li {
+    font-size: 0.8rem;
+    margin: 5px auto;
+}
+.bd-cat {
+    margin-bottom: 20px;
+}

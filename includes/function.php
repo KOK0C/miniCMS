@@ -43,7 +43,7 @@ function categories_for_joke($joke_id) {
             WHERE joke_category.joke_id = " . $joke_id;
     $result = $pdo->query($sql);
     while ($row = $result->fetch()) {
-        $categories[] = '<a href="?category=' . $row['category_id'] . '" class="category-page-link">' . $row['category_name'] . '</a>';
+        $categories[] = '<a href="?category=' . $row['category_id'] . '" class="category-page-link">' . htmlentities($row['category_name']) . '</a>';
     }
     $output = implode(', ', $categories);
     return $output;

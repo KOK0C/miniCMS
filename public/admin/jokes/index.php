@@ -107,7 +107,7 @@ if (empty($_SESSION['id'])) {
     if (isset($_GET['addjoke'])) {
 //        Форма добавления шутки
         include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/admin/jokes/addjokes.phtml';
-    } elseif (isset($_GET['updatejoke']) || isset($_GET['deletejoke'])) {
+    } elseif (isset($_GET['deletejoke'])) {
         try {
             // Выбор id существующих шуток для проверки
             $sql = 'SELECT joke_id FROM jokes';
@@ -149,6 +149,20 @@ if (empty($_SESSION['id'])) {
             $_SESSION['errors'] = 'Вы пытаетесь удалить недоступную шутку';
             redirect_to(DOMEN . 'public/');
         }
+    } elseif (isset($_GET['updatejoke'])) {
+        try {
+            // Выбор id существующих шуток для проверки
+            $sql = 'SELECT joke_id FROM jokes';
+            if ($_SESSION['type'] === 'user') {
+                $sql .=  ' WHERE author_id = ' . $_SESSION['id'];
+            }
+            $totalJoke = $pdo->query($sql);
+            $totalJoke = $totalJoke->fetchAll(PDO::FETCH_COLUMN);
+        } catch (PDOException $e) {
+            $error = 'Ошибка при подсчете количества шуток автора в бд: ' . $e->getMessage();
+            include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/error.phtml';
+            exit();
+        }
         if (in_array($_GET['updatejoke'], $totalJoke)) {
 //            После проверки достаем текс и категории выбраной шутки для редактирования
             $_SESSION['updatejoke'] = $_GET['updatejoke'];
@@ -173,4 +187,6 @@ if (empty($_SESSION['id'])) {
             redirect_to(DOMEN . 'public/');
         }
     }
+} else {
+    redirect_to(DOMEN . 'public/');
 }

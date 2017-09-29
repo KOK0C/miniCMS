@@ -101,3 +101,21 @@ function validate_Joke(){
         return false;
     }
 }
+
+function validate_Category() {
+    $errors = [];
+    if (mb_strlen(trim($_POST['category'])) == 0) {
+        $errors[] = 'Поле не должно быть пустым';
+    }
+    if (is_numeric($_POST['category'])) {
+        $errors[] = 'Категория не может быть числом';
+    }
+    if ($errors) {
+        $error = '<span>При работе с категорией обнаружены ошибки:</span><br><ul><li>';
+        $error .= implode('</li><li>', $errors);
+        $error .= '</li></ul>';
+        return $error;
+    } else {
+        return false;
+    }
+}

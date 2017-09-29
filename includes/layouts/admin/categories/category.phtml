@@ -1,0 +1,15 @@
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+
+<section></section>
+
+<section>
+    <?php if (! empty($_SESSION['errors'])) {print session_errors();} ?>
+    <form method="post" class="form">
+        <span><?= $header; ?></span>
+        <label for="category"><?= $label; ?></label>
+        <input type="text" name="category" value="<?= $updateValue; ?>"><br>
+        <input type="submit" name="<?= $operation; ?>" value="<?= $nameOperation; ?>">
+    </form>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>
