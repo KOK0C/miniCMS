@@ -1,0 +1,34 @@
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+<section></section>
+
+<section>
+    <?php if (! empty($_SESSION['message'])) {print session_message();} ?>
+<div class="private-area">
+    <table>
+        <caption>Личный кабинет</caption>
+        <tr>
+            <td>Ваше имя:</td><td><?= htmlentities($_SESSION['name']); ?></td>
+        </tr>
+        <tr>
+            <td>Ваша фамилия:</td><td><?= htmlentities($_SESSION['surname']); ?></td>
+        </tr>
+        <tr>
+            <td>Ваш эмейл:</td><td><?= htmlentities($_SESSION['email']); ?></td>
+        </tr>
+        <tr class="last-row"><td colspan="2"><a href="<?= DOMEN . 'public/admin/users/?useredit=' . $_SESSION['id']; ?>"
+                                                class="button">Редактировать</a></td></tr>
+        <tr class="last-row"><td colspan="2"><a href="<?= DOMEN . 'public/admin/users/?userpassedit=' . $_SESSION['id']; ?>"
+                                                class="button">Изменить пароль</a></td></tr>
+        <?php if ($_SESSION['type'] === 'admin'): ?>
+            <tr class="last-row"><td colspan="2"><a href="<?= DOMEN . 'public/admin/users/?alluser'; ?>"
+                                                    class="button">Зарегистрированные пользователи</a></td></tr>
+        <?php endif; ?>
+        <tr class="last-row"><td colspan="2"><a href="<?= DOMEN . 'public/login/?logout'; ?>"
+                                                class="button">Выйти</a></td></tr>
+        <tr class="last-row"><td colspan="2"><a href="<?= DOMEN . 'public/' ?>" class="button">Назад</a></td></tr>
+    </table>
+</div>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>

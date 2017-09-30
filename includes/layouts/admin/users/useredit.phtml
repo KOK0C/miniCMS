@@ -1,0 +1,20 @@
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+<section></section>
+
+<section>
+    <?php if (! empty($_SESSION['errors'])) {print session_errors();} ?>
+    <form method="post" class="form">
+        <span><?= $header; ?></span>
+        <label for="<?= $nameOne; ?>"><?= $firstInput; ?></label>
+        <input type="<?= $type; ?>" name="<?= $nameOne; ?>" value="<?= $firstValue ?? ''; ?>"><br>
+        <label for="<?= $nameTwo; ?>"><?= $secondInput; ?></label>
+        <input type="<?= $type; ?>" name="<?= $nameTwo; ?>" value="<?= $secondValue ?? ''; ?>"><br>
+        <label for="<?= $nameThree; ?>"><?= $thirdInput; ?></label>
+        <input type="<?= $type; ?>" name="<?= $nameThree; ?>" value="<?= $thirdValue ?? ''; ?>"><br>
+        <input type="submit" name="<?= $submitName; ?>" value="Изменить">
+        <a href="<?= DOMEN . 'public/admin/users/?user=' . $_SESSION['id']; ?>" class="button">Отмена</a>
+    </form>
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>

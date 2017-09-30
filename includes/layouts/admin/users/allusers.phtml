@@ -1,0 +1,54 @@
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/header.phtml'; ?>
+<section></section>
+
+<section>
+    <?php if (! empty($_SESSION['message'])) {print session_message();} ?>
+    <?php if (! empty($_SESSION['errors'])) {print session_errors();} ?>
+
+    <div class="private-area all-user-list">
+        <table>
+            <caption>Зарегистрированные пользователи:</caption>
+            <tr style="text-align: center">
+                <td>Имя пользователя</td>
+                <td>Фамилия пользователя</td>
+                <td>Эмейл пользователя</td>
+                <td>Статус</td>
+                <td>Редактировать</td>
+            </tr>
+            <?php while ($user = $allUsers->fetch()): ?>
+                <tr>
+                    <td style="font-weight: bold"><?= htmlentities($user['name']); ?></td>
+                    <td style="font-weight: bold"><?= htmlentities($user['surname']); ?></td>
+                    <td style="font-weight: bold"><?= htmlentities($user['user_email']); ?></td>
+                    <td style="font-weight: bold"><?= htmlentities($user['user_type_name']); ?></td>
+                    <td style="text-align: center"><a href="<?= DOMEN . 'public/admin/users/?us_ed=' . $user['user_id'] ?>"
+                                                      class="button">Редактировать</a></td>
+                </tr>
+                <?php if ($edit && $_GET['us_ed'] === $user['user_id']): ?>
+
+                    <form method="post">
+                        <tr>
+                            <td><input type="text" name="user_name" value="<?= htmlentities($user['name']); ?>"></td>
+                            <td><input type="text" name="user_surname" value="<?= htmlentities($user['surname']); ?>"></td>
+                            <td><input type="text" name="user_email" value="<?= htmlentities($user['user_email']); ?>"></td>
+                            <td><select name="user_type">
+                                    <?php while ($user_type = $allUserType->fetch()): ?>
+                                        <option value="<?= $user_type['user_type_id']; ?>"
+                                            <?php if ($user_type['user_type_id'] === $user['user_type_id']) {print ' selected';} ?>>
+                                            <?= $user_type['user_type_name']; ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select></td>
+                            <td><input type="submit" name="admin_edit_user" value="Обновить"></td>
+                        </tr>
+                    </form>
+                <?php endif; ?>
+            <?php endwhile; ?>
+            <tr class="last-row"><td colspan="5" style="border: none"><a href="<?= DOMEN . 'public/admin/users/?user=' . $_SESSION['id'] ?>"
+                                                                         class="button">Назад</a></td></tr>
+        </table>
+    </div>
+
+</section>
+
+<?php include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/layouts/footer.phtml'; ?>

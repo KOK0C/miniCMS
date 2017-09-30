@@ -175,7 +175,7 @@ header h1 {
     color: black;
 }
 .form input[type="submit"]:hover {
-    background-color: #1A446C;
+    background-color: #1c7fb7;
 }
 .button {
     background-color: #D4E6F4;
@@ -221,4 +221,47 @@ header h1 {
 }
 .bd-cat {
     margin-bottom: 20px;
+}
+.private-area {
+    margin: 50px 0 0 300px;
+    width: 400px;
+}
+.private-area table {
+    width: 100%;
+    color: #1a446c;
+    margin-top: 25px;
+    font-size: 1rem;
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
+.private-area caption {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+}
+.private-area table td {
+    padding: 3px 7px 2px 7px;
+    vertical-align: middle;
+}
+.private-area .last-row {
+    text-align: center;
+    margin-top: 10px;
+}
+.all-user-list {
+    width: 900px;
+    margin-left: 50px;
+}
+.all-user-list td {
+    border: 1px solid #1a446c;
+}
+.all-user-list input[type="submit"] {
+    background-color: #D4E6F4;
+    font-size: 1rem;
+    border: none;
+    color: black;
+    box-shadow: inset 0 0 10px rgba(26,68,108,.75);
+    border-radius: 5px;
+    margin-left: 17px;
+}
+.all-user-list input[type="submit"]:hover {
+    background-color: #1c7fb7;
 }

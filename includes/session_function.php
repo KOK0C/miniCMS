@@ -27,9 +27,9 @@ function session_message() {
 function hello_block_authorization() {
     $output = '<div class="hello-block">';
     $output .= '<p>';
-    $output .= 'Привет, ' . $_SESSION['name'] . ' ' . $_SESSION['surname'] . '<br>';
-    $output .= 'Мы рады Вас видеть, и надеемся<br>';
-    $output .= 'Вы не желаете <a href="' . DOMEN . 'public/login/?logout">выходить</a>';
+    $output .= 'Привет, ' . htmlentities($_SESSION['name']) . ' ' . htmlentities($_SESSION['surname']) . ' мы рады Вас видеть,<br>';
+    $output .= 'можете посетить свой <a href="' . DOMEN . 'public/admin/users/?user=' . $_SESSION['id'] . '">личный кабинет</a><br>';
+    $output .= 'и надеемся Вы не желаете <a href="' . DOMEN . 'public/login/?logout">выходить</a>';
     $output .= '</p>';
     $output .= '</div>';
     return $output;
