@@ -6,5 +6,5 @@
  * Time: 16:15
  */
 
-define('DOMEN', 'http://localhost:63342/miniCMS/');
+define('DOMEN', 'http://miniCMS/');
 define('PER_PAGE', 10); //Кол-во записей на страницу

@@ -1,7 +1,7 @@
 
 <nav>
     <div class="navigation">
-        <?php if ($_SESSION['type'] === 'admin'): ?>
+        <?php if (! empty($_SESSION) && $_SESSION['type'] === 'admin'): ?>
             <a href="<?= DOMEN . 'public/admin/categories/?addcategory'; ?>" class="category new-category">
                 + Создать новую категорию</a>
         <?php endif; ?>
@@ -13,7 +13,7 @@
                 <a href="?category=<?= $row['category_id'] ?>"
                    class="category<?php if ($category == $row['category_id']) {print ' inactive';} ?>">
                     <?= $row['category_name']; ?></a><br>
-                <?php if ($category == $row['category_id'] && $_SESSION['type'] === 'admin'): ?>
+                <?php if (! empty($_SESSION) && $category == $row['category_id'] && $_SESSION['type'] === 'admin'): ?>
                     <ul>
                         <li><a href="<?= DOMEN . 'public/admin/categories/?updatecategory=' . $row['category_id']; ?>"
                                class="category">Редактировать категорию</a><br></li>
